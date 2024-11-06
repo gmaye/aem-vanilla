@@ -1,0 +1,24 @@
+version: 1
+
+indices:
+  english: &default
+    include:
+      - /articles/*
+    target: /articles/query-index.xslx
+    properties:
+      title:
+        select: main h2:first-of-type
+        value: |
+          textContent(el)
+      description:
+        select: head > meta[name="description"]
+        value: |
+          attribute(el, 'content')
+      tags:
+        select: head > meta[property="article:tag"]
+        values: |
+          match(attribute(el, 'content'), '/\s*,\s*/')
+      lastModified:
+        select: none
+        value: |
+          parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')
